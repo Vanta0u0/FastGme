@@ -1,6 +1,3 @@
-// -----------------------------------------------------------------
-// AJUSTES DE DIFICULTAD MÓVIL
-// -----------------------------------------------------------------
 const MOBILE_BREAKPOINT = 768; // Ancho máximo para aplicar dificultad móvil
 
 // Tiempo de inactividad (antes de que el círculo se mueva solo)
@@ -20,9 +17,12 @@ let countdownTimerId;
 let tiempoRestante = 60; 
 let juegoActivo = false; 
 const RETRASO_INICIO = 1000;
-const ACIERTOS_UMBRAL = 40; 
 
+// Variables para el Cálculo del Tiempo de Reacción
 let currentInactivityTime; 
+let tiempoMovimiento; // Momento exacto en que el círculo se mueve
+let sumaTiemposReaccion = 0; // Suma total de todos los tiempos de acierto
+const PENALIZACION_FALLO_MS = 1000; // Penalización por fallo: 1000ms (1 segundo)
 
 const COLOR_ACENTO = '#00FFC0';
 const COLOR_VERDE_MOVIMIENTO = '#00CC00'; 
@@ -34,25 +34,29 @@ const SHADOW_ACENTO = '0 0 15px ' + COLOR_ACENTO;
 const SHADOW_VERDE = '0 0 15px ' + COLOR_VERDE_MOVIMIENTO;
 
 // -----------------------------------------------------
-// FUNCIONES DE UTILIDAD (TIEMPO DE REACCIÓN)
+// FUNCIONES DE CÁLCULO DE PUNTUACIÓN
 // -----------------------------------------------------
 
-function generarNumeroAleatorio(min, max) {
-    return (Math.random() * (max - min) + min).toFixed(2);
-}
-
-function calcularTiempoReaccionEstimado(aciertos) {
-    let min, max;
+function calcularTiempoReaccionPromedio() {
+    // Calcula el tiempo de reacción promedio (en ms) después de aplicar la penalización.
     
-    if (aciertos > ACIERTOS_UMBRAL) {
-        min = 90; // Permite hasta 95 ms para el cierre automático
-        max = 110;
-    } else {
-        min = 150;
-        max = 300;
+    // 1. Penalización Total por Fallos
+    const penalizacionTotal = fallos * PENALIZACION_FALLO_MS;
+    
+    // 2. Tiempo Total de Reacción Ajustado
+    // Se suma la penalización a la suma de todos los tiempos de reacción de aciertos.
+    const tiempoTotalAjustado = sumaTiemposReaccion + penalizacionTotal;
+    
+    // 3. Promedio Final
+    if (aciertos === 0) {
+        // Si no hay aciertos, el promedio es la penalización total o un valor alto.
+        return (tiempoTotalAjustado > 0 ? tiempoTotalAjustado : 9999).toFixed(2);
     }
     
-    return generarNumeroAleatorio(min, max);
+    // El promedio es el tiempo total ajustado dividido por el número de aciertos.
+    const promedio = tiempoTotalAjustado / aciertos;
+    
+    return promedio.toFixed(2);
 }
 
 // -----------------------------------------------------
@@ -193,20 +197,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         botonCirculo.style.display = 'none';
 
-        const tiempoEstimadoString = calcularTiempoReaccionEstimado(aciertos);
-        const tiempoEstimadoNumber = parseFloat(tiempoEstimadoString); 
+        // 🛑 Usar el nuevo cálculo del tiempo de reacción promedio real
+        const tiempoReaccionFinal = calcularTiempoReaccionPromedio(); 
+        const tiempoEstimadoNumber = parseFloat(tiempoReaccionFinal); 
 
-        // LÓGICA DE CIERRE AUTOMÁTICO (<= 100.00 ms)
-        if (tiempoEstimadoNumber <= 100.00) { 
+        // LÓGICA DE CIERRE AUTOMÁTICO (Si el tiempo promedio es extremadamente bajo)
+        if (tiempoEstimadoNumber <= 90.00) { 
             modalFinJuego.style.display = 'flex';
             modalFinJuego.style.pointerEvents = 'none'; 
             
             modalContenidoFin.innerHTML = `
                 <div style="color: #FFD700; border: 2px solid #FFD700; border-radius: 10px; padding: 20px; box-shadow: 0 0 20px #FFD700;">
                     <h2>¡TIEMPO DE REACCIÓN EXTREMO!</h2>
-                    <p>Tu tiempo de reacción estimado fue de:</p>
+                    <p>Tu tiempo de reacción promedio fue de:</p>
                     <p style="font-size: 2em; font-weight: bold; margin: 15px 0;">
-                        ${tiempoEstimadoString} ms
+                        ${tiempoReaccionFinal} ms
                     </p>
                     <p>El juego se ha detenido automáticamente.</p>
                     <p style="font-size: 0.9em; margin-top: 20px;">
@@ -219,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Flujo Normal de Fin de Juego
             finalAciertosDisplay.textContent = aciertos;
             finalFallosDisplay.textContent = fallos;
-            tiempoReaccionEstimadoDisplay.textContent = `${tiempoEstimadoString} ms`;
+            tiempoReaccionEstimadoDisplay.textContent = `${tiempoReaccionFinal} ms`;
             
             btnReiniciar.style.display = 'block'; 
             modalFinJuego.style.pointerEvents = 'auto'; 
@@ -231,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         aciertos = 0;
         fallos = 0;
         tiempoRestante = 60;
+        sumaTiemposReaccion = 0; // Reiniciar la suma de tiempos
 
         clearTimeout(movementTimerId);
         clearInterval(countdownTimerId); 
@@ -258,9 +264,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }, currentInactivityTime);
     }
 
+    function moverCirculoAleatoriamente() {
+        const anchoMaximo = window.innerWidth - botonCirculo.clientWidth;
+        const altoMaximo = window.innerHeight - botonCirculo.clientHeight;
+
+        const nuevoX = Math.floor(Math.random() * anchoMaximo);
+        const nuevoY = Math.floor(Math.random() * altoMaximo);
+        
+        botonCirculo.style.position = 'fixed'; 
+        botonCirculo.style.left = `${nuevoX}px`;
+        botonCirculo.style.top = `${nuevoY}px`;
+        
+        // 🛑 REGISTRA EL TIEMPO EN QUE EL CÍRCULO SE MOVIÓ
+        tiempoMovimiento = performance.now();
+    }
+
+
     function manejarAcierto() {
         if (tiempoRestante === 0 || !juegoActivo) return;
 
+        // 🛑 CALCULAR EL TIEMPO DE REACCIÓN
+        const tiempoReaccion = performance.now() - tiempoMovimiento;
+        sumaTiemposReaccion += tiempoReaccion; // Sumar al total
+        
         aciertos++;
         conteoAciertosDisplay.textContent = `Aciertos: ${aciertos}`;
         conteoAciertosDisplay.style.backgroundColor = '#202020';
@@ -291,6 +317,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (event.target.id !== 'btn-circulo') {
             fallos++;
+            // Nota: La penalización por fallo (sumaTiemposReaccion += PENALIZACION_FALLO_MS)
+            // se aplica en la función 'calcularTiempoReaccionPromedio' al final del juego.
             
             conteoFallosDisplayInterno.textContent = `Fallos: ${fallos}`;
             conteoFallosDisplayExterno.textContent = `Fallos Totales: ${fallos}`; 
@@ -309,18 +337,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 conteoFallosDisplayExterno.style.backgroundColor = '#1a1a1a';
             }, 150);
         }
-    }
-
-    function moverCirculoAleatoriamente() {
-        const anchoMaximo = window.innerWidth - botonCirculo.clientWidth;
-        const altoMaximo = window.innerHeight - botonCirculo.clientHeight;
-
-        const nuevoX = Math.floor(Math.random() * anchoMaximo);
-        const nuevoY = Math.floor(Math.random() * altoMaximo);
-        
-        botonCirculo.style.position = 'fixed'; 
-        botonCirculo.style.left = `${nuevoX}px`;
-        botonCirculo.style.top = `${nuevoY}px`;
     }
 
     // -----------------------------------------------------
