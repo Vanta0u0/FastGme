@@ -133,7 +133,8 @@ h1 {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.95); 
     display: flex; 
-    justify-content: center;
+    /* Mover contenido a la izquierda */
+    justify-content: flex-start;
     align-items: center;
     z-index: 3000; 
 }
@@ -147,6 +148,9 @@ h1 {
     box-shadow: 0 0 50px var(--color-acento);
     color: var(--color-texto-claro);
     pointer-events: auto;
+    /* Añadir margen para separación del borde izquierdo */
+    margin-left: 5%; 
+    max-width: 400px; 
 }
 
 .modal-contenido-inicio h2 {
@@ -157,8 +161,19 @@ h1 {
 
 .modal-contenido-inicio p {
     font-size: 1.1em;
-    margin-bottom: 25px;
+    margin-bottom: 15px; /* Ajuste para dar espacio a la lista */
 }
+
+/* Estilo específico para la lista ordenada dentro del modal */
+.modal-contenido-inicio ol {
+    text-align: left;
+    margin-bottom: 25px;
+    list-style-position: inside;
+}
+.modal-contenido-inicio li {
+    margin-bottom: 5px;
+}
+
 
 #btn-iniciar {
     padding: 15px 30px;
@@ -268,4 +283,8 @@ h1 {
 /* Clase para ocultar elementos del juego */
 .oculto {
     display: none !important;
+}cultar elementos del juego */
+.oculto {
+    display: none !important;
 }
+
