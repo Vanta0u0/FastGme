@@ -9,20 +9,34 @@
 <body>
     
     <div id="modal-inicio-juego">
-        <div class="modal-contenido-inicio">
-            <h2>¡Atrapa el Círculo!</h2>
+        
+        <div id="grid-inicio">
             
-            <div style="text-align: left; max-width: 300px; margin: 0 auto;">
-                <p>El objetivo es medir tu velocidad de reacción. Lee las reglas:</p>
-                <ol style="margin-left: -20px;">
-                    <li>**Duración:** Tienes **1 minuto** para hacer tantos aciertos como puedas.</li>
-                    <li>**Mecánica:** El círculo se moverá a diferentes posiciones. ¡Haz clic en él lo más rápido posible!</li>
-                    <li>**Tiempo de Reacción:** Se mide el tiempo exacto que tardas en reaccionar desde que el círculo se detiene en su nueva posición hasta que haces clic.</li>
-                    <li>**Fallos:** Si haces clic fuera del círculo, se registrará un fallo. Esto ya **no afecta** tu tiempo promedio, pero se mantiene en el conteo.</li>
+            <div id="explicacion-columna" class="modal-columna">
+                <h3>📜 ¿Cómo Jugar?</h3>
+                <ol>
+                    <li>**Meta:** Haz clic en el círculo lo más rápido posible durante 60 segundos.</li>
+                    <li>**Tiempo:** Se mide tu tiempo de reacción *exacto* al tocar el círculo.</li>
+                    <li>**Movimiento:** El círculo se mueve cada 1 segundo (o antes si fallas).</li>
+                    <li>**Fallos:** Hacer clic fuera del círculo cuenta como fallo.</li>
                 </ol>
             </div>
             
-            <button id="btn-iniciar">INICIAR</button>
+            <div id="principal-columna" class="modal-columna">
+                <h2>¡Atrapa el Círculo!</h2>
+                <p>Mide tus reflejos en este desafío de 60 segundos.</p>
+                <button id="btn-iniciar">INICIAR JUEGO</button>
+            </div>
+
+            <div id="novedades-columna" class="modal-columna">
+                <h3>✨ Últimos Cambios</h3>
+                <ul>
+                    <li>**Movimiento:** Se restauró la animación de 0.2s al moverse.</li>
+                    <li>**Penalización:** La penalización por fallo ha sido **eliminada** del cálculo promedio.</li>
+                    <li>**Interfaz:** La ventana de inicio ahora tiene un diseño de 3 columnas para mayor claridad.</li>
+                </ul>
+            </div>
+
         </div>
     </div>
 
