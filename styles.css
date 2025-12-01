@@ -5,9 +5,7 @@
     --color-fallo: #FF4136; 
     /* NUEVA VARIABLE: Fondo para las cajas de las columnas y contadores */
     --color-fondo-columna: #1a1a1a; 
-}
-
-/* ESTILOS GLOBALES */
+}/* ESTILOS GLOBALES */
 body {
     background-color: var(--color-fondo); 
     font-family: 'Arial', sans-serif;
@@ -16,92 +14,74 @@ body {
     padding: 0;
     min-height: 100vh;
     transition: background-color 0.15s ease-out; 
-}
-
-/* CONTENEDOR PRINCIPAL: Zona del título */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; 
+}/* CONTENEDOR PRINCIPAL: Zona del título */
 #main-container {
-    width: 80%;
-    max-width: 700px;
-    padding: 40px;
-    border: 1px solid var(--color-acento); 
-    box-shadow: 0 0 50px rgba(0, 255, 192, 0.15); 
-    border-radius: 10px;
-    /* USO DE LA NUEVA VARIABLE */
-    background-color: var(--color-fondo-columna); 
-    margin: 50px auto; 
-    text-align: center;
+    width: 100%; /* Ajuste para el juego */
+    height: 100vh; /* Ajuste para el juego */
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background-color: transparent; 
+    margin: 0; 
     position: relative;
     z-index: 100;
     pointer-events: none; 
-}
-h1 {
+}h1 {
+    /* Este estilo no se usa en el juego final (solo título dentro del modal) */
     color: var(--color-acento); 
     text-align: center;
     border-bottom: 2px solid var(--color-acento); 
     padding-bottom: 15px;
     margin-bottom: 30px;
     text-shadow: 0 0 10px rgba(0, 255, 192, 0.5); 
-}
-
-/* ESTILOS DE BASE PARA CONTADORES INTERNOS (Oculto) */
+}/* ESTILOS DE BASE PARA CONTADORES INTERNOS (Oculto) */
 #conteo-fallos {
     color: var(--color-fallo); 
     display: none; 
-}
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4em;
+    font-weight: bold;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 10;
+}/* --- CONTADORES EXTERIORES AGRUPADOS (AJUSTE DE POSICIÓN) --- */
+/* NOTA: Tu HTML final usa un solo div #contadores, re-implemento esa lógica con tus estilos */
+#conteo-fallos-exterior { display: none; } /* Ocultamos estos estilos, el HTML final usa #contadores */
+#conteo-aciertos { display: none; } /* Ocultamos estos estilos, el HTML final usa #contadores */
+#temporizador { display: none; } /* Ocultamos estos estilos, el HTML final usa #contadores */
 
-/* --- CONTADOR DE FALLOS EXTERIOR (Arriba Derecha) --- */
-#conteo-fallos-exterior {
-    position: fixed; 
+#contadores { /* Estilo para el contenedor agrupado (Si lo usara tu HTML final) */
+    position: fixed;
     top: 20px;
-    right: 20px;
-    padding: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    background-color: rgba(26, 26, 26, 0.7);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    pointer-events: none;
+}
+.contador { /* Estilo para los spans dentro de #contadores */
     font-size: 1.2em;
-    color: var(--color-fallo); 
-    /* USO DE LA NUEVA VARIABLE */
-    background-color: var(--color-fondo-columna); 
-    border: 1px solid var(--color-fallo);
+    font-weight: bold;
+    color: var(--color-texto-claro);
+    padding: 5px 10px;
+    border: 2px solid var(--color-texto-claro);
     border-radius: 5px;
-    z-index: 1000; 
     text-shadow: none;
     transition: background-color 0.15s ease-out;
-    pointer-events: none; 
 }
 
-/* --- CONTADOR DE ACIERTOS EXTERIOR (Arriba Derecha) --- */
-#conteo-aciertos {
-    position: fixed; 
-    top: 80px;
-    right: 20px;
-    padding: 10px;
-    font-size: 1.2em;
-    color: var(--color-acento); 
-    /* USO DE LA NUEVA VARIABLE */
-    background-color: var(--color-fondo-columna); 
-    border: 1px solid var(--color-acento);
-    border-radius: 5px;
-    z-index: 1000; 
-    text-shadow: none;
-    transition: background-color 0.15s ease-out;
-    pointer-events: none; 
-}
-
-/* --- TEMPORIZADOR EXTERIOR (Arriba Izquierda) --- */
-#temporizador {
-    position: fixed; 
-    top: 20px;
-    left: 20px; 
-    padding: 10px;
-    font-size: 1.2em;
-    color: #FFFFFF; 
-    /* USO DE LA NUEVA VARIABLE */
-    background-color: var(--color-fondo-columna); 
-    border: 1px solid #FFFFFF; 
-    border-radius: 5px;
-    z-index: 1000; 
-    text-shadow: none;
-    transition: background-color 0.15s ease-out;
-    pointer-events: none; 
-}
 
 /* CÍRCULO INTERACTIVO */
 #btn-circulo {
@@ -122,13 +102,13 @@ h1 {
     pointer-events: auto; 
     z-index: 900; 
     box-shadow: 0 0 15px var(--color-acento); 
+    touch-action: manipulation;
 }
+
 #btn-circulo:hover {
     background-color: #00E6B2; 
     box-shadow: 0 0 25px var(--color-acento); 
-}
-
-/* ----------------------------------------------------------------- */
+}/* ----------------------------------------------------------------- */
 /* --- ESTILOS DEL MODAL DE INICIO: ESCRITORIO (3 COLUMNAS BASE) --- */
 /* ----------------------------------------------------------------- */
 #modal-inicio-juego {
@@ -142,9 +122,7 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 3000; 
-}
-
-/* NUEVOS ESTILOS PARA LA ESTRUCTURA DE 3 COLUMNAS */
+}/* NUEVOS ESTILOS PARA LA ESTRUCTURA DE 3 COLUMNAS */
 #grid-inicio { 
     display: flex; 
     gap: 20px; 
@@ -152,8 +130,8 @@ h1 {
     border-radius: 10px; 
     pointer-events: auto; 
     max-width: 90%; 
+    max-width: 1100px; /* Asegura el ancho de escritorio */
 }
-
 .modal-columna { 
     /* USO DE LA NUEVA VARIABLE */
     background-color: var(--color-fondo-columna); 
@@ -164,10 +142,8 @@ h1 {
     box-shadow: 0 0 30px rgba(0, 255, 192, 0.2); 
     flex: 1; 
     min-width: 250px; 
-    position: relative; /* Necesario para los botones de control móvil */
-}
-
-/* Estilos de la columna central */
+    position: relative; 
+}/* Estilos de la columna central */
 #principal-columna { 
     border-width: 3px; 
     box-shadow: 0 0 50px var(--color-acento); 
@@ -175,8 +151,9 @@ h1 {
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
+    background-color: var(--color-fondo); /* Fondo más oscuro para el centro */
+    min-width: 350px;
 }
-
 .columna-titulo { 
     color: var(--color-acento); 
     font-size: 1.4em; 
@@ -187,16 +164,17 @@ h1 {
     margin-bottom: 15px; 
     font-style: italic; 
 }
-
 #principal-columna h2 { color: var(--color-acento); font-size: 2.8em; margin-bottom: 10px; }
 #principal-columna p { font-size: 1.2em; margin-bottom: 25px; }
 #explicacion-columna ol, #novedades-columna ul { text-align: left; padding-left: 20px; font-size: 1em; }
-#explicacion-columna li, #novedades-columna li { margin-bottom: 8px; }
-
-
-/* Ocultar botones de móvil en escritorio */
+#explicacion-columna li, #novedades-columna li { margin-bottom: 8px; }/* Ocultar botones de móvil en escritorio */
 .btn-abrir-columna, .btn-cerrar-columna {
     display: none !important;
+}
+
+/* Ocultar el contenedor de botones de control móvil en PC (Seguro) */
+#control-movil-container {
+    display: none;
 }
 
 #btn-iniciar {
@@ -213,74 +191,103 @@ h1 {
 #btn-iniciar:hover {
     background-color: #00E6B2;
     transform: scale(1.05);
-}
-
-/* ----------------------------------------------------------------- */
+}/* ----------------------------------------------------------------- */
 /* --- ESTILOS RESPONSIVOS: MÓVIL (Max 768px) --- */
 /* ----------------------------------------------------------------- */
-
 @media (max-width: 768px) {
     
+    /* 1. COMPACTAR EL GRID PRINCIPAL */
     #grid-inicio {
         flex-direction: column; /* Apila las columnas */
-        width: 90%;
-        max-width: 90%;
-        padding: 20px;
+        width: 95%; /* Usar más espacio */
+        max-width: 95%;
+        padding: 10px; /* Reducir padding */
         gap: 0;
     }
 
     .modal-columna {
         width: 100%;
-        padding: 20px;
+        padding: 15px; /* Compactar padding */
         min-width: unset;
         box-shadow: none;
     }
-
-    /* Ocultar las columnas laterales por defecto en móvil */
+    
+    /* 2. OCULTAR LAS COLUMNAS LATERALES Y HACERLAS FLOTANTES */
     #explicacion-columna,
     #novedades-columna {
-        display: none;
+        display: none; /* Ocultar por defecto */
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        padding-top: 60px;
+        padding: 50px 15px 15px 15px; /* Espacio para el botón de cerrar */
         overflow-y: auto;
-        z-index: 3001;
+        background-color: var(--color-fondo); /* Fondo más oscuro cuando flota */
+        z-index: 3003;
+        text-align: left;
     }
 
-    /* Mostrar la columna principal (Centro) */
+    /* Reducir contenido de las columnas laterales */
+    .columna-titulo { font-size: 1.4em; } 
+    #explicacion-columna li, #novedades-columna li { font-size: 0.9em; margin-bottom: 4px; }
+
+
+    /* 3. COLUMNA PRINCIPAL (Centro) MÁS COMPACTA */
     #principal-columna {
         width: 100%;
-        padding: 40px 20px;
-        box-shadow: 0 0 40px var(--color-acento);
+        padding: 25px 15px; /* Compactar padding */
+        box-shadow: 0 0 30px var(--color-acento);
         position: relative;
         z-index: 3002;
     }
+    
+    /* Reducir texto principal */
+    #principal-columna h2 { font-size: 2.0em; margin-bottom: 5px; } 
+    #principal-columna p { font-size: 0.9em; margin-bottom: 15px; } 
 
-    /* Mostrar botones de Abrir en la columna central */
+    /* Botón de iniciar más grande */
+    #btn-iniciar {
+        font-size: 1.3em;
+        padding: 12px 25px;
+        width: 90%; 
+    }
+
+    /* 4. MOSTRAR BOTONES DE CONTROL INYECTADOS POR JS */
+    
+    /* Ocultar botones ABSOLUTOS (del código original) */
     .btn-abrir-columna {
-        display: block !important;
-        position: absolute;
-        top: 10px;
-        padding: 5px 10px;
-        font-size: 1.5em;
-        background: transparent;
+        display: none !important; 
+    }
+    
+    /* Contenedor de botones móviles inyectado por JS (estilo de apoyo) */
+    #control-movil-container {
+        display: flex !important; /* Hacemos visible el contenedor que JS inyecta */
+        justify-content: space-around;
+        gap: 10px;
+        margin-top: 20px;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Estilos para los nuevos botones de control (manejados por JS) */
+    .btn-control-movil {
+        padding: 10px;
+        flex-grow: 1;
+        font-size: 0.85em; 
+        background-color: transparent;
         border: 1px solid var(--color-acento);
         color: var(--color-acento);
         border-radius: 5px;
         cursor: pointer;
-        z-index: 3003;
+        transition: background-color 0.2s;
     }
-
-    #btn-abrir-explicacion { left: 10px; }
-    #btn-abrir-novedades { right: 10px; }
 
     /* Mostrar botón de Cerrar en las columnas laterales */
     .btn-cerrar-columna {
         display: block !important;
-        position: absolute;
+        position: fixed; 
         top: 10px;
         right: 10px;
         padding: 5px 10px;
@@ -292,8 +299,23 @@ h1 {
         cursor: pointer;
         z-index: 3004;
     }
+    
+    /* Ajuste de contadores en móvil */
+    #contadores {
+        gap: 15px;
+        padding: 8px 15px;
+    }
+    .contador {
+        font-size: 1.0em;
+    }
 }
 
+/* Ocultar el contenedor de botones de control móvil en PC (Seguro) */
+@media (min-width: 769px) {
+    #control-movil-container {
+        display: none !important;
+    }
+}
 
 /* --- ESTILOS DEL MODAL DE FIN DE JUEGO (Mantenidos) --- */
 #modal-fin-juego {
@@ -309,7 +331,6 @@ h1 {
     z-index: 2000; 
 }
 .modal-contenido {
-    /* USO DE LA NUEVA VARIABLE */
     background-color: var(--color-fondo-columna); 
     border: 2px solid var(--color-acento);
     border-radius: 10px;
@@ -330,8 +351,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-/* Estilos para las puntuaciones finales (mini-contadores) */
+}/* Estilos para las puntuaciones finales (mini-contadores) */
 .final-score-badge {
     padding: 8px 15px; 
     font-size: 1.2em; 
@@ -371,9 +391,7 @@ h1 {
 #btn-reiniciar:hover {
     background-color: #00E6B2;
     transform: scale(1.05);
-}
-
-/* Clase para ocultar elementos del juego */
+}/* Clase para ocultar elementos del juego */
 .oculto {
     display: none !important;
 }
