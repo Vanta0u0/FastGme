@@ -111,7 +111,7 @@ h1 {
     margin: 0; 
     display: block; 
     
-    transition: all 0.2s ease;
+    /* SE ELIMINA LA TRANSICIÓN PARA EL MOVIMIENTO INSTANTÁNEO */
     
     pointer-events: auto; 
     z-index: 900; 
