@@ -13,27 +13,35 @@
         <div id="grid-inicio">
             
             <div id="explicacion-columna" class="modal-columna">
+                <button class="btn-cerrar-columna oculto" data-target="explicacion-columna">X</button>
+                
                 <p class="columna-titulo">_Instrucciones del Juego_</p>
                 <ol>
                     <li>**Meta:** Haz clic en el círculo lo más rápido posible durante 60 segundos.</li>
                     <li>**Tiempo:** Se mide tu tiempo de reacción _exacto_ al tocar el círculo.</li>
-                    <li>**Movimiento:** El círculo se mueve cada 1 segundo (o antes si fallas).</li>
+                    <li>**Movimiento:** El círculo se mueve según la dificultad (PC/Móvil).</li>
                     <li>**Fallos:** Hacer clic fuera del círculo cuenta como fallo.</li>
                 </ol>
             </div>
             
             <div id="principal-columna" class="modal-columna">
+                
+                <button id="btn-abrir-explicacion" class="btn-abrir-columna oculto">📝</button>
+                <button id="btn-abrir-novedades" class="btn-abrir-columna oculto">✨</button>
+                
                 <h2>¡Atrapa el Círculo!</h2>
                 <p>Mide tus reflejos en este desafío de 60 segundos.</p>
                 <button id="btn-iniciar">INICIAR JUEGO</button>
             </div>
 
             <div id="novedades-columna" class="modal-columna">
-                <p class="columna-titulo">_Actualizaciones Recientes_</p>
+                <button class="btn-cerrar-columna oculto" data-target="novedades-columna">X</button>
+                
+                <p class="columna-titulo">_Ajustes de Dificultad_</p>
                 <ul>
-                    <li>**Movimiento:** Se restauró la animación de 0.2s al moverse.</li>
-                    <li>**Penalización:** La penalización por fallo ha sido **eliminada** del cálculo promedio.</li>
-                    <li>**Interfaz:** La ventana de inicio ahora tiene un diseño de 3 columnas para mayor claridad.</li>
+                    <li>**Dificultad Dinámica:** El tamaño del círculo y el tiempo de movimiento cambian automáticamente según si usas PC o Móvil.</li>
+                    <li>**Detección:** Tamaño de círculo más pequeño y tiempo de movimiento más rápido en dispositivos móviles (`< 768px`).</li>
+                    <li>**Cálculo:** Se eliminó la penalización por fallos del tiempo de reacción promedio.</li>
                 </ul>
             </div>
 
@@ -45,10 +53,10 @@
         <button id="btn-circulo"></button>
     </div>
 
-    <div id="conteo-fallos-exterior">Fallos Totales: 0</div>
     <div id="conteo-aciertos">Aciertos: 0</div>
+    <div id="conteo-fallos-exterior">Fallos Totales: 0</div>
     <div id="temporizador">1:00</div>
-    <div id="conteo-fallos">Fallos: 0</div> 
+    <div id="conteo-fallos" style="display: none;">Fallos: 0</div> 
 
     <div id="modal-fin-juego" style="display: none;">
         <div class="modal-contenido">
