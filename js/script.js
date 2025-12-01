@@ -20,9 +20,9 @@ const RETRASO_INICIO = 1000;
 
 // Variables para el Cálculo del Tiempo de Reacción
 let currentInactivityTime; 
-let tiempoMovimiento; // Momento exacto en que el círculo se mueve
+let tiempoMovimiento; // Momento exacto en que el círculo se mueve (INSTANTÁNEO)
 let sumaTiemposReaccion = 0; // Suma total de todos los tiempos de acierto
-const PENALIZACION_FALLO_MS = 1000; // Penalización por fallo: 1000ms (1 segundo)
+// La constante PENALIZACION_FALLO_MS se ha ELIMINADO de los cálculos.
 
 const COLOR_ACENTO = '#00FFC0';
 const COLOR_VERDE_MOVIMIENTO = '#00CC00'; 
@@ -38,23 +38,16 @@ const SHADOW_VERDE = '0 0 15px ' + COLOR_VERDE_MOVIMIENTO;
 // -----------------------------------------------------
 
 function calcularTiempoReaccionPromedio() {
-    // Calcula el tiempo de reacción promedio (en ms) después de aplicar la penalización.
+    // Calcula el tiempo de reacción promedio (en ms).
+    // Ya no se aplica penalización por fallos.
     
-    // 1. Penalización Total por Fallos
-    const penalizacionTotal = fallos * PENALIZACION_FALLO_MS;
-    
-    // 2. Tiempo Total de Reacción Ajustado
-    // Se suma la penalización a la suma de todos los tiempos de reacción de aciertos.
-    const tiempoTotalAjustado = sumaTiemposReaccion + penalizacionTotal;
-    
-    // 3. Promedio Final
     if (aciertos === 0) {
-        // Si no hay aciertos, el promedio es la penalización total o un valor alto.
-        return (tiempoTotalAjustado > 0 ? tiempoTotalAjustado : 9999).toFixed(2);
+        // Si no hay aciertos, devuelve un valor alto para evitar división por cero.
+        return 9999.00.toFixed(2);
     }
     
-    // El promedio es el tiempo total ajustado dividido por el número de aciertos.
-    const promedio = tiempoTotalAjustado / aciertos;
+    // El promedio es el tiempo total de aciertos dividido por el número de aciertos.
+    const promedio = sumaTiemposReaccion / aciertos;
     
     return promedio.toFixed(2);
 }
@@ -197,7 +190,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         botonCirculo.style.display = 'none';
 
-        // 🛑 Usar el nuevo cálculo del tiempo de reacción promedio real
         const tiempoReaccionFinal = calcularTiempoReaccionPromedio(); 
         const tiempoEstimadoNumber = parseFloat(tiempoReaccionFinal); 
 
@@ -236,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
         aciertos = 0;
         fallos = 0;
         tiempoRestante = 60;
-        sumaTiemposReaccion = 0; // Reiniciar la suma de tiempos
+        sumaTiemposReaccion = 0; // Reinicia la suma de tiempos
 
         clearTimeout(movementTimerId);
         clearInterval(countdownTimerId); 
@@ -275,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         botonCirculo.style.left = `${nuevoX}px`;
         botonCirculo.style.top = `${nuevoY}px`;
         
-        // 🛑 REGISTRA EL TIEMPO EN QUE EL CÍRCULO SE MOVIÓ
+        // REGISTRA EL TIEMPO INSTANTÁNEO EN QUE EL CÍRCULO LLEGÓ A SU NUEVA POSICIÓN
         tiempoMovimiento = performance.now();
     }
 
@@ -283,9 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function manejarAcierto() {
         if (tiempoRestante === 0 || !juegoActivo) return;
 
-        // 🛑 CALCULAR EL TIEMPO DE REACCIÓN
+        // CALCULAR EL TIEMPO DE REACCIÓN
         const tiempoReaccion = performance.now() - tiempoMovimiento;
-        sumaTiemposReaccion += tiempoReaccion; // Sumar al total
+        sumaTiemposReaccion += tiempoReaccion; 
         
         aciertos++;
         conteoAciertosDisplay.textContent = `Aciertos: ${aciertos}`;
@@ -317,8 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (event.target.id !== 'btn-circulo') {
             fallos++;
-            // Nota: La penalización por fallo (sumaTiemposReaccion += PENALIZACION_FALLO_MS)
-            // se aplica en la función 'calcularTiempoReaccionPromedio' al final del juego.
+            
+            // Los fallos se registran, pero NO AFECTAN el cálculo de T_promedio.
             
             conteoFallosDisplayInterno.textContent = `Fallos: ${fallos}`;
             conteoFallosDisplayExterno.textContent = `Fallos Totales: ${fallos}`; 
