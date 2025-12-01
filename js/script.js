@@ -1,12 +1,15 @@
 const MOBILE_BREAKPOINT = 768; 
+
 // --- DIFICULTAD BASE (PC/Mouse) ---
 const PC_INACTIVITY_MS = 1000; // 1.00 segundo (PC)
 const CIRCLE_SIZE_PC = '80px';
+
 // --- DIFICULTAD ESTRICTA (Móvil/Táctil) ---
 const MOBILE_INACTIVITY_MS = 750; // 0.75 segundos (Móvil)
 const CIRCLE_SIZE_MOBILE = '55px';
 
 // -----------------------------------------------------------------
+
 let aciertos = 0;
 let fallos = 0;
 let movementTimerId; 
@@ -15,14 +18,14 @@ let tiempoRestante = 60;
 let juegoActivo = false; 
 const RETRASO_INICIO = 1000;
 
+// Variables para el Cálculo del Tiempo de Reacción
 let currentInactivityTime; 
 let tiempoMovimiento; // Usado para el cálculo de reacción Pura (Móvil)
 let sumaTiemposReaccion = 0; 
 const UMBRAL_CIERRE_EXTREMO = 90.00;
+let tiempoInicioIntentoPC; // Usado para el cálculo de reacción Estándar (PC)
 
-// Nueva variable para el cálculo de reacción Estándar (PC)
-let tiempoInicioIntentoPC; 
-
+// Constantes de Estilo
 const COLOR_ACENTO = '#00FFC0';
 const COLOR_VERDE_MOVIMIENTO = '#00CC00'; 
 const COLOR_AZUL_CELEBRACION_FLASH = 'rgba(0, 191, 255, 0.5)';
@@ -34,6 +37,7 @@ const SHADOW_VERDE = '0 0 15px ' + COLOR_VERDE_MOVIMIENTO;
 // -----------------------------------------------------
 // FUNCIONES DE CÁLCULO DE PUNTUACIÓN
 // -----------------------------------------------------
+
 function calcularTiempoReaccionPromedio() {
     if (aciertos === 0) {
         return 9999.00.toFixed(2);
@@ -44,24 +48,31 @@ function calcularTiempoReaccionPromedio() {
 
 // -----------------------------------------------------
 // LÓGICA DE DIFICULTAD CONDICIONAL
-// -----------------------------------------------------
-function aplicarAjusteMovil(botonCirculo) {
-    if (window.innerWidth <= MOBILE_BREAKPOINT) {
-        // DIFICULTAD MÓVIL (Más rápido, más pequeño)
-        currentInactivityTime = MOBILE_INACTIVITY_MS;
-        botonCirculo.style.width = CIRCLE_SIZE_MOBILE;
-        botonCirculo.style.height = CIRCLE_SIZE_MOBILE;
-    } else {
-        // DIFICULTAD PC (Más lento, más grande)
-        currentInactivityTime = PC_INACTIVITY_MS;
-        botonCirculo.style.width = CIRCLE_SIZE_PC;
-        botonCirculo.style.height = CIRCLE_SIZE_PC;
-    }
-    // Llama a centrarCirculo para que el cambio de tamaño no desplace el botón
-    centrarCirculo();
-}
+// Se definen aquí antes de su uso en DOMContentLoaded
 // -----------------------------------------------------
 
+function aplicarAjusteMovil(botonCirculo) { // Mantengo el parámetro para compatibilidad, aunque se usará la variable local 'botonCirculo'
+    // Dentro de DOMContentLoaded, las variables del DOM son accesibles.
+    const circulo = document.querySelector('#btn-circulo'); 
+    
+    if (window.innerWidth <= MOBILE_BREAKPOINT) {
+        // DIFICULTAD MÓVIL
+        currentInactivityTime = MOBILE_INACTIVITY_MS;
+        if(circulo) circulo.style.width = CIRCLE_SIZE_MOBILE;
+        if(circulo) circulo.style.height = CIRCLE_SIZE_MOBILE;
+    } else {
+        // DIFICULTAD PC
+        currentInactivityTime = PC_INACTIVITY_MS;
+        if(circulo) circulo.style.width = CIRCLE_SIZE_PC;
+        if(circulo) circulo.style.height = CIRCLE_SIZE_PC;
+    }
+    // Asegurarse de que centrarCirculo está definido
+    if (typeof centrarCirculo === 'function') {
+        centrarCirculo();
+    }
+}
+
+// -----------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -81,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const finalFallosDisplay = document.querySelector('#final-fallos');
     const btnReiniciar = document.querySelector('#btn-reiniciar');
     const tiempoReaccionEstimadoDisplay = document.querySelector('#tiempo-reaccion-estimado');
+    const principalColumna = document.getElementById('principal-columna');
 
     const elementosDelJuego = [
         conteoAciertosDisplay, conteoFallosDisplayExterno, temporizadorDisplay, 
@@ -88,10 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
     
     // --- LÓGICA DE CONTROL MÓVIL DEL MODAL (3 Columnas) ---
-    const principalColumna = document.getElementById('principal-columna');
     const explicacionColumna = document.getElementById('explicacion-columna');
     const novedadesColumna = document.getElementById('novedades-columna');
-    const btnAbrirExplicacion = document.getElementById('btn-abrir-explicacion');
+    const btnAbrirExplicacion = document.getElementById('btn-abrir-explicacion'); 
     const btnAbrirNovedades = document.getElementById('btn-abrir-novedades');
     const btnCerrarColumnas = document.querySelectorAll('.btn-cerrar-columna');
 
@@ -140,10 +151,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // REINICIO CONDICIONAL DE LOS CRONÓMETROS
         if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            // MÓVIL: Se inicia el cronómetro de reacción pura (tiempo de llegada del círculo)
+            // MÓVIL: Reacción Pura
             tiempoMovimiento = performance.now(); 
         } else {
-            // PC: Se inicia el cronómetro de reacción estándar (tiempo en que el usuario debe empezar a mover el mouse)
+            // PC: Reacción Estándar
             tiempoInicioIntentoPC = performance.now(); 
         }
     }
@@ -156,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function inicializarPantalla() {
         elementosDelJuego.forEach(el => el.classList.add('oculto'));
         
+        // Llamada a la función de dificultad con el elemento DOM
         aplicarAjusteMovil(botonCirculo);
         
         window.addEventListener('resize', () => {
@@ -164,6 +176,47 @@ document.addEventListener('DOMContentLoaded', function() {
         
         actualizarContadores();
         actualizarTemporizadorDisplay(); 
+        
+        // --- LÓGICA DE INYECCIÓN DE BOTONES DE CONTROL MÓVIL (Compacto) ---
+        if (window.innerWidth <= MOBILE_BREAKPOINT) {
+            // Eliminar contenedor anterior si existe para evitar duplicados al redimensionar
+            let controlMovilContainer = document.getElementById('control-movil-container');
+            if (controlMovilContainer) {
+                controlMovilContainer.remove();
+            }
+
+            controlMovilContainer = document.createElement('div');
+            controlMovilContainer.id = 'control-movil-container';
+
+            const btnControlExplicacion = document.createElement('button');
+            btnControlExplicacion.className = 'btn-control-movil';
+            btnControlExplicacion.textContent = 'Cómo Jugar 📚';
+            btnControlExplicacion.addEventListener('click', () => {
+                abrirColumna(explicacionColumna);
+            });
+            
+            const btnControlNovedades = document.createElement('button');
+            btnControlNovedades.className = 'btn-control-movil';
+            btnControlNovedades.textContent = 'Novedades ✨';
+            btnControlNovedades.addEventListener('click', () => {
+                abrirColumna(novedadesColumna);
+            });
+
+            controlMovilContainer.appendChild(btnControlExplicacion);
+            controlMovilContainer.appendChild(btnControlNovedades);
+            
+            // Insertar el contenedor después del botón de inicio
+            const btnIniciarElement = document.querySelector('#btn-iniciar'); // Usar la variable local del DOM
+            if (btnIniciarElement && principalColumna) {
+                principalColumna.insertBefore(controlMovilContainer, btnIniciarElement.nextSibling);
+            }
+        } else {
+            // Eliminar contenedor si existe en PC
+            const existingContainer = document.getElementById('control-movil-container');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+        }
     }
 
     function iniciarJuego() {
@@ -247,8 +300,21 @@ document.addEventListener('DOMContentLoaded', function() {
             finalFallosDisplay.textContent = fallos;
             tiempoReaccionEstimadoDisplay.textContent = `${tiempoReaccionFinal} ms`;
             
-            document.querySelector('#modal-fin-juego .modal-contenido').innerHTML = modalContenidoFin.innerHTML;
-            btnReiniciar.style.display = 'block'; 
+            // Re-renderizar contenido del modal para mostrar resultados
+            modalContenidoFin.innerHTML = `
+                <h2>🎉 Juego Terminado 🎉</h2>
+                <div class="resultados-finales">
+                    <p>Aciertos totales: <span id="final-aciertos">${aciertos}</span></p>
+                    <p>Fallos totales: <span id="final-fallos">${fallos}</span></p>
+                    <p>Tiempo de Reacción Promedio:</p>
+                    <h3 id="tiempo-reaccion-estimado">${tiempoReaccionFinal} ms</h3>
+                </div>
+                <button id="btn-reiniciar" class="btn-principal" style="display: block;">REINICIAR JUEGO</button>
+            `;
+
+            // Volver a vincular el listener del botón Reiniciar después de re-renderizar
+            document.getElementById('btn-reiniciar').addEventListener('click', reiniciarJuego);
+
             modalFinJuego.style.pointerEvents = 'auto'; 
             modalFinJuego.style.display = 'flex';
         }
@@ -285,10 +351,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let tiempoReaccion;
         
         if (window.innerWidth <= MOBILE_BREAKPOINT) {
-            // MÓVIL: CÁLCULO DE REACCIÓN PURA (Ignora el tiempo de movimiento del círculo)
+            // MÓVIL: CÁLCULO DE REACCIÓN PURA (Usando la lógica original: performance.now() - tiempoMovimiento)
             tiempoReaccion = performance.now() - tiempoMovimiento;
         } else {
-            // PC: CÁLCULO ESTÁNDAR (Incluye el tiempo de movimiento del mouse)
+            // PC: CÁLCULO ESTÁNDAR (Usando la lógica original: performance.now() - tiempoInicioIntentoPC)
             tiempoReaccion = performance.now() - tiempoInicioIntentoPC;
         }
 
@@ -331,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cuerpoPagina.style.backgroundColor = COLOR_FONDO_FALLO;
             conteoFallosDisplayExterno.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
             
-            moverCirculoAleatoriamente(); // Esto reinicia el cronómetro del intento (PC o Móvil)
+            moverCirculoAleatoriamente(); 
             resetMovementTimer(); 
             
             botonCirculo.style.backgroundColor = COLOR_ACENTO; 
@@ -347,16 +413,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // -----------------------------------------------------
     // EVENT LISTENERS Y LLAMADAS INICIALES
     // -----------------------------------------------------
+    
     botonCirculo.addEventListener('click', manejarAcierto);
     cuerpoPagina.addEventListener('click', manejarFallo);
     btnReiniciar.addEventListener('click', reiniciarJuego); 
     btnIniciar.addEventListener('click', iniciarJuego); 
     
-    // --- EVENT LISTENERS DE CONTROL MÓVIL DEL MODAL ---
-    btnAbrirExplicacion.addEventListener('click', () => { abrirColumna(explicacionColumna); });
-    btnAbrirNovedades.addEventListener('click', () => { abrirColumna(novedadesColumna); });
     btnCerrarColumnas.forEach(btn => { btn.addEventListener('click', cerrarColumna); });
-
 
     inicializarPantalla();
 });
