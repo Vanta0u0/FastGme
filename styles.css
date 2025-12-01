@@ -3,6 +3,7 @@
     --color-texto-claro: #E0E0E0; 
     --color-acento: #00FFC0; 
     --color-fallo: #FF4136; 
+    /* NUEVA VARIABLE: Fondo para las cajas de las columnas y contadores */
     --color-fondo-columna: #1a1a1a; 
 }
 
@@ -17,62 +18,202 @@ body {
     transition: background-color 0.15s ease-out; 
 }
 
-/* CONTENEDOR PRINCIPAL y Contadores */
-#main-container { width: 80%; max-width: 700px; padding: 40px; border: 1px solid var(--color-acento); box-shadow: 0 0 50px rgba(0, 255, 192, 0.15); border-radius: 10px; background-color: var(--color-fondo-columna); margin: 50px auto; text-align: center; position: relative; z-index: 100; pointer-events: none; }
-h1 { color: var(--color-acento); text-align: center; border-bottom: 2px solid var(--color-acento); padding-bottom: 15px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(0, 255, 192, 0.5); }
-#conteo-fallos { color: var(--color-fallo); display: none; } 
-
-/* Contador de Fallos con fondo oscuro y borde rojo (Estilo original) */
-#conteo-fallos-exterior { 
-    position: fixed; 
-    top: 20px; 
-    right: 20px; 
-    padding: 10px; 
-    font-size: 1.2em; 
-    color: var(--color-fallo); 
+/* CONTENEDOR PRINCIPAL: Zona del título */
+#main-container {
+    width: 80%;
+    max-width: 700px;
+    padding: 40px;
+    border: 1px solid var(--color-acento); 
+    box-shadow: 0 0 50px rgba(0, 255, 192, 0.15); 
+    border-radius: 10px;
+    /* USO DE LA NUEVA VARIABLE */
     background-color: var(--color-fondo-columna); 
-    border: 1px solid var(--color-fallo); 
-    border-radius: 5px; 
+    margin: 50px auto; 
+    text-align: center;
+    position: relative;
+    z-index: 100;
+    pointer-events: none; 
+}
+h1 {
+    color: var(--color-acento); 
+    text-align: center;
+    border-bottom: 2px solid var(--color-acento); 
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(0, 255, 192, 0.5); 
+}
+
+/* ESTILOS DE BASE PARA CONTADORES INTERNOS (Oculto) */
+#conteo-fallos {
+    color: var(--color-fallo); 
+    display: none; 
+}
+
+/* --- CONTADOR DE FALLOS EXTERIOR (Arriba Derecha) --- */
+#conteo-fallos-exterior {
+    position: fixed; 
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    font-size: 1.2em;
+    color: var(--color-fallo); 
+    /* USO DE LA NUEVA VARIABLE */
+    background-color: var(--color-fondo-columna); 
+    border: 1px solid var(--color-fallo);
+    border-radius: 5px;
     z-index: 1000; 
+    text-shadow: none;
+    transition: background-color 0.15s ease-out;
     pointer-events: none; 
 }
 
-#conteo-aciertos { position: fixed; top: 80px; right: 20px; padding: 10px; font-size: 1.2em; color: var(--color-acento); background-color: var(--color-fondo-columna); border: 1px solid var(--color-acento); border-radius: 5px; z-index: 1000; pointer-events: none; }
-#temporizador { position: fixed; top: 20px; left: 20px; padding: 10px; font-size: 1.2em; color: #FFFFFF; background-color: var(--color-fondo-columna); border: 1px solid #FFFFFF; border-radius: 5px; z-index: 1000; pointer-events: none; }
+/* --- CONTADOR DE ACIERTOS EXTERIOR (Arriba Derecha) --- */
+#conteo-aciertos {
+    position: fixed; 
+    top: 80px;
+    right: 20px;
+    padding: 10px;
+    font-size: 1.2em;
+    color: var(--color-acento); 
+    /* USO DE LA NUEVA VARIABLE */
+    background-color: var(--color-fondo-columna); 
+    border: 1px solid var(--color-acento);
+    border-radius: 5px;
+    z-index: 1000; 
+    text-shadow: none;
+    transition: background-color 0.15s ease-out;
+    pointer-events: none; 
+}
+
+/* --- TEMPORIZADOR EXTERIOR (Arriba Izquierda) --- */
+#temporizador {
+    position: fixed; 
+    top: 20px;
+    left: 20px; 
+    padding: 10px;
+    font-size: 1.2em;
+    color: #FFFFFF; 
+    /* USO DE LA NUEVA VARIABLE */
+    background-color: var(--color-fondo-columna); 
+    border: 1px solid #FFFFFF; 
+    border-radius: 5px;
+    z-index: 1000; 
+    text-shadow: none;
+    transition: background-color 0.15s ease-out;
+    pointer-events: none; 
+}
 
 /* CÍRCULO INTERACTIVO */
 #btn-circulo {
-    /* El tamaño base se sobreescribe en JS por la lógica de dificultad */
-    width: 80px;  height: 80px; 
-    border-radius: 50%; background-color: var(--color-acento); 
-    border: none; cursor: pointer; position: fixed !important; margin: 0; display: block; 
-    transition: all 0.2s ease; /* Transición de movimiento de 0.2s */
-    pointer-events: auto; z-index: 900; box-shadow: 0 0 15px var(--color-acento); 
+    /* El tamaño es dinámico por JS */
+    width: 80px;  
+    height: 80px; 
+    border-radius: 50%; 
+    background-color: var(--color-acento); 
+    border: none;
+    cursor: pointer;
+    position: fixed !important; 
+    margin: 0; 
+    display: block; 
+    
+    /* MANTENEMOS LA TRANSICIÓN DE MOVIMIENTO */
+    transition: all 0.2s ease;
+    
+    pointer-events: auto; 
+    z-index: 900; 
+    box-shadow: 0 0 15px var(--color-acento); 
 }
-#btn-circulo:hover { background-color: #00E6B2; box-shadow: 0 0 25px var(--color-acento); }
-
+#btn-circulo:hover {
+    background-color: #00E6B2; 
+    box-shadow: 0 0 25px var(--color-acento); 
+}
 
 /* ----------------------------------------------------------------- */
-/* --- ESTILOS DEL MODAL DE INICIO: ESCRITORIO (POR DEFECTO) --- */
+/* --- ESTILOS DEL MODAL DE INICIO: ESCRITORIO (3 COLUMNAS BASE) --- */
 /* ----------------------------------------------------------------- */
-#modal-inicio-juego { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); display: flex; justify-content: center; align-items: center; z-index: 3000; }
-#grid-inicio { display: flex; gap: 20px; padding: 40px; border-radius: 10px; pointer-events: auto; max-width: 90%; }
-.modal-columna { background-color: var(--color-fondo-columna); border: 2px solid var(--color-acento); border-radius: 10px; padding: 25px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 192, 0.2); flex: 1; min-width: 250px; }
+#modal-inicio-juego {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    z-index: 3000; 
+}
+
+/* NUEVOS ESTILOS PARA LA ESTRUCTURA DE 3 COLUMNAS */
+#grid-inicio { 
+    display: flex; 
+    gap: 20px; 
+    padding: 40px; 
+    border-radius: 10px; 
+    pointer-events: auto; 
+    max-width: 90%; 
+}
+
+.modal-columna { 
+    /* USO DE LA NUEVA VARIABLE */
+    background-color: var(--color-fondo-columna); 
+    border: 2px solid var(--color-acento); 
+    border-radius: 10px; 
+    padding: 25px; 
+    text-align: center; 
+    box-shadow: 0 0 30px rgba(0, 255, 192, 0.2); 
+    flex: 1; 
+    min-width: 250px; 
+    position: relative; /* Necesario para los botones de control móvil */
+}
+
+/* Estilos de la columna central */
+#principal-columna { 
+    border-width: 3px; 
+    box-shadow: 0 0 50px var(--color-acento); 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.columna-titulo { 
+    color: var(--color-acento); 
+    font-size: 1.4em; 
+    font-weight: bold; 
+    border-bottom: 1px solid rgba(0, 255, 192, 0.3); 
+    padding-bottom: 10px; 
+    margin-top: 0; 
+    margin-bottom: 15px; 
+    font-style: italic; 
+}
+
+#principal-columna h2 { color: var(--color-acento); font-size: 2.8em; margin-bottom: 10px; }
+#principal-columna p { font-size: 1.2em; margin-bottom: 25px; }
+#explicacion-columna ol, #novedades-columna ul { text-align: left; padding-left: 20px; font-size: 1em; }
+#explicacion-columna li, #novedades-columna li { margin-bottom: 8px; }
+
 
 /* Ocultar botones de móvil en escritorio */
 .btn-abrir-columna, .btn-cerrar-columna {
     display: none !important;
 }
 
-.columna-titulo { color: var(--color-acento); font-size: 1.4em; font-weight: bold; border-bottom: 1px solid rgba(0, 255, 192, 0.3); padding-bottom: 10px; margin-top: 0; margin-bottom: 15px; font-style: italic; }
-#principal-columna { border-width: 3px; box-shadow: 0 0 50px var(--color-acento); display: flex; flex-direction: column; justify-content: center; align-items: center; }
-#principal-columna h2 { color: var(--color-acento); font-size: 2.8em; margin-bottom: 10px; }
-#principal-columna p { font-size: 1.2em; margin-bottom: 25px; }
-#explicacion-columna ol, #novedades-columna ul { text-align: left; padding-left: 20px; font-size: 1em; }
-#explicacion-columna li, #novedades-columna li { margin-bottom: 8px; }
-#btn-iniciar { padding: 15px 30px; font-size: 1.3em; background-color: var(--color-acento); color: var(--color-fondo); border: none; border-radius: 8px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; font-weight: bold; }
-#btn-iniciar:hover { background-color: #00E6B2; transform: scale(1.05); }
-
+#btn-iniciar {
+    padding: 15px 30px;
+    font-size: 1.3em;
+    background-color: var(--color-acento);
+    color: var(--color-fondo); 
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    font-weight: bold;
+}
+#btn-iniciar:hover {
+    background-color: #00E6B2;
+    transform: scale(1.05);
+}
 
 /* ----------------------------------------------------------------- */
 /* --- ESTILOS RESPONSIVOS: MÓVIL (Max 768px) --- */
@@ -99,13 +240,12 @@ h1 { color: var(--color-acento); text-align: center; border-bottom: 2px solid va
     #explicacion-columna,
     #novedades-columna {
         display: none;
-        /* Estilos fijos para que ocupen toda la pantalla cuando se abren */
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        padding-top: 60px; /* Espacio para el botón de cerrar */
+        padding-top: 60px;
         overflow-y: auto;
         z-index: 3001;
     }
@@ -155,15 +295,85 @@ h1 { color: var(--color-acento); text-align: center; border-bottom: 2px solid va
 }
 
 
-/* --- ESTILOS DEL MODAL DE FIN DE JUEGO --- */
-#modal-fin-juego { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-.modal-contenido { background-color: #1a1a1a; border: 2px solid var(--color-acento); border-radius: 10px; padding: 30px 50px; text-align: center; box-shadow: 0 0 40px var(--color-acento); color: var(--color-texto-claro); pointer-events: auto; }
+/* --- ESTILOS DEL MODAL DE FIN DE JUEGO (Mantenidos) --- */
+#modal-fin-juego {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; 
+}
+.modal-contenido {
+    /* USO DE LA NUEVA VARIABLE */
+    background-color: var(--color-fondo-columna); 
+    border: 2px solid var(--color-acento);
+    border-radius: 10px;
+    padding: 30px 50px;
+    text-align: center;
+    box-shadow: 0 0 40px var(--color-acento);
+    color: var(--color-texto-claro);
+    pointer-events: auto; 
+}
+.modal-contenido h2 {
+    color: var(--color-acento);
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+.modal-contenido p {
+    font-size: 1.3em;
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* Estilos para las puntuaciones finales (mini-contadores) */
+.final-score-badge {
+    padding: 8px 15px; 
+    font-size: 1.2em; 
+    border-radius: 5px;
+    margin-left: 10px;
+    display: inline-block; 
+    font-weight: bold;
+    background-color: #303030; 
+}
+.badge-fallo {
+    color: var(--color-fallo); 
+    border: 1px solid var(--color-fallo); 
+    box-shadow: 0 0 5px rgba(255, 65, 54, 0.5);
+}
+.badge-acierto {
+    color: var(--color-acento); 
+    border: 1px solid var(--color-acento); 
+    box-shadow: 0 0 5px rgba(0, 255, 192, 0.5);
+}
+.badge-reaccion {
+    color: var(--color-texto-claro); 
+    background-color: #303030;
+    border: 1px solid var(--color-texto-claro); 
+    box-shadow: 0 0 5px rgba(224, 224, 224, 0.5);
+}
+#btn-reiniciar {
+    padding: 10px 20px;
+    margin-top: 30px;
+    font-size: 1.1em;
+    background-color: var(--color-acento);
+    color: var(--color-fondo); 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+#btn-reiniciar:hover {
+    background-color: #00E6B2;
+    transform: scale(1.05);
+}
 
-.final-score-badge { padding: 8px 15px; font-size: 1.2em; border-radius: 5px; margin-left: 10px; display: inline-block; font-weight: bold; background-color: #303030; }
-.badge-fallo { color: var(--color-fallo); border: 1px solid var(--color-fallo); box-shadow: 0 0 5px rgba(255, 65, 54, 0.5); }
-.badge-acierto { color: var(--color-acento); border: 1px solid var(--color-acento); box-shadow: 0 0 5px rgba(0, 255, 192, 0.5); }
-.badge-reaccion { color: var(--color-texto-claro); background-color: #303030; border: 1px solid var(--color-texto-claro); box-shadow: 0 0 5px rgba(224, 224, 224, 0.5); }
-#btn-reiniciar { padding: 10px 20px; margin-top: 30px; font-size: 1.1em; background-color: var(--color-acento); color: var(--color-fondo); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; }
-#btn-reiniciar:hover { background-color: #00E6B2; transform: scale(1.05); }
-
-.oculto { display: none !important; }
+/* Clase para ocultar elementos del juego */
+.oculto {
+    display: none !important;
+}
