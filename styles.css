@@ -116,3 +116,28 @@ h1 { color: var(--color-acento); text-align: center; border-bottom: 2px solid va
 #btn-reiniciar:hover { background-color: #00E6B2; transform: scale(1.05); }
 
 .oculto { display: none !important; }
+
+/* ----------------------------------------------------------------- */
+/* --- NUEVOS PARÁMETROS ADITIVOS PARA VERSIÓN BLINK (ADICIONAL) --- */
+/* ----------------------------------------------------------------- */
+
+/* Animación de pulso sutil para ayudar a la sincronización cerebro-ojo */
+@keyframes pulse-blink {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.blink-active {
+    animation: pulse-blink 0.1s ease-in-out;
+}
+
+/* Estilo para el contenedor de TR Extrema (Dorado) */
+.tr-extrema-container {
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px #FFD700;
+    margin: 10px 0;
+}
