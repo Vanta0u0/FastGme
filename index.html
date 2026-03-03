@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reaction Trainer - Blink Edition</title>
+    
+    <style>
+        body { background-color: #121212; color: #E0E0E0; margin: 0; }
+        .oculto { display: none !important; }
+    </style>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,22 +32,19 @@
                 <ol>
                     <li>Haz clic en el círculo lo más rápido posible.</li>
                     <li>Si fallas el clic, el fondo parpadeará en rojo.</li>
-                    <li>El juego dura 60 segundos.</li>
                 </ol>
             </div>
 
             <div class="modal-columna" id="principal-columna">
                 <h2>¿Listo?</h2>
-                <p>Pon a prueba tus reflejos</p>
                 <button id="btn-iniciar">INICIAR JUEGO</button>
             </div>
 
             <div class="modal-columna" id="novedades-columna">
                 <p class="columna-titulo">Blink Edition</p>
                 <ul>
-                    <li><strong>Audio Sync:</strong> Tonos de ayuda para resetear el parpadeo atencional.</li>
-                    <li><strong>Visual Pulse:</strong> Feedback dinámico al aparecer el objetivo.</li>
-                    <li><strong>Dificultad:</strong> Ajuste automático según rendimiento.</li>
+                    <li>Audio Sync Activo</li>
+                    <li>Visual Pulse Activo</li>
                 </ul>
             </div>
         </div>
@@ -52,8 +55,6 @@
             <h2>¡Tiempo Agotado!</h2>
             <p>Aciertos: <span id="final-aciertos" class="final-score-badge badge-acierto">0</span></p>
             <p>Fallos: <span id="final-fallos" class="final-score-badge badge-fallo">0</span></p>
-            <hr style="border-color: rgba(0, 255, 192, 0.2); margin: 20px 0;">
-            <p>Tiempo de Reacción Promedio:</p>
             <div id="tiempo-reaccion-estimado" class="final-score-badge badge-reaccion">0 ms</div>
             <br>
             <button id="btn-reiniciar">REINTENTAR</button>
