@@ -3,58 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Reacción Extrema - Versión Final</title>
+    <title>Juego de Reacción Extrema - Pro</title>
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
-    <div id="main-container">
+    <div id="main-container" class="oculto">
         <h1>Juego de Reacción Extrema</h1>
         <button id="btn-circulo" class="oculto"></button>
     </div>
 
-    <div id="temporizador" class="oculto">Tiempo: 00:60</div>
+    <div id="temporizador" class="oculto">1:00</div>
     <div id="conteo-aciertos" class="oculto">Aciertos: 0</div>
-    <div id="conteo-fallos-exterior" class="oculto">Fallos: 0</div>
+    <div id="conteo-fallos-exterior" class="oculto">Fallos Totales: 0</div>
     <div id="conteo-fallos" class="oculto">¡FALLO!</div>
-
 
     <div id="modal-inicio-juego" class="modal">
         <div id="grid-inicio">
-            
             <div id="explicacion-columna" class="modal-columna">
                 <button class="btn-cerrar-columna oculto">X</button>
-                <h3 class="columna-titulo">📚 Cómo Jugar</h3>
+                <h3 class="columna-titulo">📚 Reglas</h3>
                 <ol>
-                    <li>Haz clic en el círculo lo más rápido posible.</li>
-                    <li>Si no fallas en los primeros 10s, la dificultad sube automáticamente.</li>
-                    <li>Usa los tonos de audio para guiar tu visión y evitar el bloqueo.</li>
+                    <li>Toca el círculo antes de que se mueva solo.</li>
+                    <li>Si fallas el fondo, se registra el error.</li>
+                    <li>A los 25 aciertos, verás un flash de celebración.</li>
                 </ol>
             </div>
             
             <div id="principal-columna" class="modal-columna">
                 <h2>Reacción Extrema</h2>
-                <p>Mide tu velocidad de procesamiento. Adaptado para móvil y escritorio.</p>
+                <p>Mide tu velocidad. El juego se detendrá si detecta una TR Extrema.</p>
                 <button id="btn-iniciar">INICIAR JUEGO</button>
-                <div id="control-movil-container" class="oculto">
-                    </div>
+                <div id="control-movil-container" class="oculto"></div>
             </div>
             
             <div id="novedades-columna" class="modal-columna">
                 <button class="btn-cerrar-columna oculto">X</button>
-                <h3 class="columna-titulo">✨ Novedades</h3>
+                <h3 class="columna-titulo">✨ Sistema</h3>
                 <ul>
-                    <li>Dificultad Dinámica: El juego se adapta a tu nivel en tiempo real.</li>
-                    <li>Audio Feedback: Mitigación del efecto Blink Atencional.</li>
-                    <li>Modo Extremo: Se activa tras rachas perfectas.</li>
+                    <li>Audio-guía contra el parpadeo atencional.</li>
+                    <li>Dificultad adaptativa (Móvil/PC).</li>
+                    <li>Cálculo de TR Promedio en tiempo real.</li>
                 </ul>
             </div>
         </div>
     </div>
 
     <div id="modal-fin-juego" class="modal oculto">
-        <div class="modal-contenido" id="modal-fin-juego-contenido">
-            </div>
+        <div class="modal-contenido">
+            <h2>Resultados</h2>
+            <p>Aciertos: <span id="final-aciertos" class="final-score-badge badge-acierto">0</span></p>
+            <p>Fallos: <span id="final-fallos" class="final-score-badge badge-fallo">0</span></p>
+            <p>TR Promedio: <span id="tiempo-reaccion-estimado" class="final-score-badge badge-reaccion">0 ms</span></p>
+            <button id="btn-reiniciar">REINTENTAR</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
