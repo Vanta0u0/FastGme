@@ -1,3 +1,8 @@
+/**
+ * REACTION TRAINER - BLINK EDITION
+ * Versión Final Unificada
+ */
+
 // --- CONFIGURACIÓN Y CONSTANTES ---
 const MOBILE_BREAKPOINT = 768;
 const PC_INACTIVITY_MS = 1000;
@@ -26,7 +31,7 @@ const COLOR_FONDO_BASE = '#121212';
 const SHADOW_ACENTO = '0 0 15px ' + COLOR_ACENTO;
 const SHADOW_VERDE = '0 0 15px ' + COLOR_VERDE_MOVIMIENTO;
 
-// --- MOTOR DE AUDIO (Integrado para Blink Edition) ---
+// --- MOTOR DE AUDIO (Blink Edition) ---
 let audioCtx = null;
 function sonarBlink(frecuencia, tipo, duracion) {
     try {
@@ -82,8 +87,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const min = Math.floor(tiempoRestante / 60);
         const seg = tiempoRestante % 60;
         temporizadorDisplay.textContent = `${min}:${seg < 10 ? '0'+seg : seg}`;
-        temporizadorDisplay.style.color = tiempoRestante <= 10 ? '#FF4136' : '#FFFFFF';
-        temporizadorDisplay.style.borderColor = tiempoRestante <= 10 ? '#FF4136' : '#FFFFFF';
+        
+        // Efecto visual de urgencia
+        if (tiempoRestante <= 10) {
+            temporizadorDisplay.style.color = '#FF4136';
+            temporizadorDisplay.style.borderColor = '#FF4136';
+        } else {
+            temporizadorDisplay.style.color = '#FFFFFF';
+            temporizadorDisplay.style.borderColor = '#FFFFFF';
+        }
     }
 
     function moverCirculo() {
@@ -94,12 +106,13 @@ document.addEventListener('DOMContentLoaded', function() {
         botonCirculo.style.left = Math.floor(Math.random() * Math.max(0, xMax)) + "px";
         botonCirculo.style.top = Math.floor(Math.random() * Math.max(0, yMax)) + "px";
         
-        // Efecto Blink y Audio
+        // Efecto Blink y Sonido de Movimiento
         sonarBlink(600, 'sine', 0.1);
         botonCirculo.classList.remove('blink-active');
         void botonCirculo.offsetWidth; 
         botonCirculo.classList.add('blink-active');
         
+        // Marcamos el tiempo exacto del nuevo movimiento
         tiempoMovimiento = performance.now();
     }
 
@@ -122,13 +135,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const trFinal = calcularTiempoReaccionPromedio();
         const trNum = parseFloat(trFinal);
 
+        // Lógica de puntuación extrema
         if (trNum <= 90.00 && aciertos > 0) {
             modalContenidoFin.innerHTML = `
                 <div class="tr-extrema-container">
                     <h2>¡TIEMPO EXTREMO!</h2>
-                    <p style="font-size: 2.5em; font-weight: bold;">${trFinal} ms</p>
-                    <p>Detección de reflejos sobrehumanos.</p>
-                    <p style="font-size: 0.8em; margin-top: 15px;">Recarga para resetear.</p>
+                    <p style="font-size: 2.5em; font-weight: bold; margin: 10px 0;">${trFinal} ms</p>
+                    <p>Reflejos detectados: Nivel Sobrehumano.</p>
+                    <p style="font-size: 0.8em; margin-top: 20px;">Recarga la página para volver a intentar.</p>
                 </div>`;
             modalFin.style.pointerEvents = 'none';
         } else {
@@ -146,7 +160,11 @@ document.addEventListener('DOMContentLoaded', function() {
         sumaTiemposReaccion = 0;
         
         modalInicio.classList.add('oculto');
-        [mainContainer, botonCirculo, conteoAciertos, conteoFallosExt, temporizadorDisplay].forEach(el => el.classList.remove('oculto'));
+        
+        // Mostrar elementos ocultos
+        [mainContainer, botonCirculo, conteoAciertos, conteoFallosExt, temporizadorDisplay].forEach(el => {
+            if(el) el.classList.remove('oculto');
+        });
 
         actualizarTemporizadorDisplay();
 
@@ -174,20 +192,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     botonCirculo.onclick = (e) => {
         if (!juegoActivo) return;
-        e.stopPropagation(); // Evita que el clic cuente también como fallo en el body
+        e.stopPropagation(); // BLOQUEA el burbujeo para que no cuente como fallo
         
+        // Cálculo de tiempo de reacción
         sumaTiemposReaccion += (performance.now() - tiempoMovimiento);
         aciertos++;
         conteoAciertos.textContent = `Aciertos: ${aciertos}`;
         
         sonarBlink(880, 'sine', 0.1);
         
-        // Feedback visual rápido
+        // Feedback visual
         botonCirculo.style.backgroundColor = COLOR_VERDE_MOVIMIENTO;
-        if (aciertos % 25 === 0) document.body.style.backgroundColor = COLOR_AZUL_CELEBRACION_FLASH;
+        botonCirculo.style.boxShadow = SHADOW_VERDE;
+        
+        if (aciertos % 25 === 0) {
+            document.body.style.backgroundColor = COLOR_AZUL_CELEBRACION_FLASH;
+        }
         
         setTimeout(() => {
             botonCirculo.style.backgroundColor = COLOR_ACENTO;
+            botonCirculo.style.boxShadow = SHADOW_ACENTO;
             document.body.style.backgroundColor = COLOR_FONDO_BASE;
         }, 100);
 
@@ -196,23 +220,31 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     document.body.onclick = (e) => {
+        // Ignorar si el juego no está activo o si el clic fue en elementos de UI
         if (!juegoActivo || e.target.id === 'btn-circulo' || e.target.closest('#grid-inicio')) return;
         
         fallos++;
         conteoFallosExt.textContent = `Fallos Totales: ${fallos}`;
         conteoFallosInt.textContent = `Fallos: ${fallos}`;
         
+        // Feedback de error
         sonarBlink(200, 'square', 0.15);
         document.body.style.backgroundColor = COLOR_FONDO_FALLO;
-        setTimeout(() => document.body.style.backgroundColor = COLOR_FONDO_BASE, 150);
         
+        setTimeout(() => {
+            document.body.style.backgroundColor = COLOR_FONDO_BASE;
+        }, 150);
+        
+        // NUEVA REGLA: Mover círculo al fallar
         moverCirculo();
         resetMovementTimer();
     };
 
-    btnReiniciar.onclick = () => location.reload();
+    if (btnReiniciar) {
+        btnReiniciar.onclick = () => location.reload();
+    }
 
-    // Inicialización de pantalla
+    // Inicialización
     aplicarAjusteMovil();
     window.addEventListener('resize', aplicarAjusteMovil);
 });
